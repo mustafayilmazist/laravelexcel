@@ -16,13 +16,12 @@ class ExcelController extends Controller
      * input file dan gelen excel dosyasını db ye içe aktaran metod
      * @Request $request
      * */
-    function importStore(Request $request){
+    function importStore(Request $request)
+    {
         /**
-         * benzersiz bir token oluşturup Excel::import sınıfına bu tokeni ve file değişkenini gönderiyoruz.*/
-        $import_token=uniqid();
-        $import = Excel::import(new UsersImport($import_token), $request->file);
-        $inserted_users = User::where('import_token',$import_token)->get();
-        dd($inserted_users);
+         * işlem sonrası $_SESSION['inserteed_users'] oturumundaki kayıt edilen excel kullanıcı bilgilerini alıyoruz.*/
+        $import = Excel::import(new UsersImport, $request->file);
+        dd($_SESSION['inserteed_users']);
         return redirect()->back();
     }
 }

@@ -9,17 +9,6 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class UsersImport implements ToModel, WithHeadingRow
 {
-    public $import_token;
-
-    /**
-     * __construct metodunda controllerdan gelen parametreti alıp sınıf özelliğine atıyoruz.
-     * @string  $import_token
-     * */
-    public function __construct(string $import_token)
-    {
-        $this->import_token = $import_token;
-    }
-
     /**
      * 
      * ToModel den implements edilen UsersImport sınıfının dahili model metodu
@@ -28,13 +17,15 @@ class UsersImport implements ToModel, WithHeadingRow
      * */
     public function model(array $row)
     {
+        /**
+         * eklenen kullanıcıları $_SESSION['inserteed_users'] oturumuna kaydediyoruz.
+         */
         $user =  new User([
             'name'     => $row["name"],
             'email'    => $row["email"],
-            'password' => Hash::make($row['password']),
-            'import_token' =>  $this->import_token,
-
+            'password' => Hash::make($row['password'])
         ]);
+        $_SESSION['inserteed_users'][] = $user;
         return $user;
     }
 }
