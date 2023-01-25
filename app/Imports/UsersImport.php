@@ -9,23 +9,43 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class UsersImport implements ToModel, WithHeadingRow
 {
+
+
+    public $inserted_users_id;
     /**
      * 
      * ToModel den implements edilen UsersImport sınıfının dahili model metodu
      * bu metod kendisine gelen excel verisini satır satır user tablosuna ekler
-     * return null
+     * eklenen user id bilgisini $this->inserted_users_id[] özelliğine ekler
+     * return $user
      * */
     public function model(array $row)
     {
         /**
-         * eklenen kullanıcıları $_SESSION['inserteed_users'] oturumuna kaydediyoruz.
+         * eklenen kullanıcıları inserted_users_id[] özelliğine kaydediyoruz.
          */
         $user =  new User([
             'name'     => $row["name"],
-            'email'    => $row["email"],
+            'email'    => $row["email"] . uniqid(),
             'password' => Hash::make($row['password'])
         ]);
-        $_SESSION['inserteed_users'][] = $user;
+        $this->inserted_users_id[] = $user;
         return $user;
+    }
+
+    /**
+     * excel yüklemesi yapılan kullanıcıların hepsinin idlerini döndüren metod
+     * return int $id
+     */
+    public function insertedUsersId()
+    {
+        /**
+         * inserted_users_id[] özelliğindeki kullanıcıların id bilgilerini döndürüyoruz.
+         */
+        $id = [];
+        array_filter($this->inserted_users_id, function ($user) use (&$id) {
+            $id[] = $user->id;
+        });
+        return $id;
     }
 }

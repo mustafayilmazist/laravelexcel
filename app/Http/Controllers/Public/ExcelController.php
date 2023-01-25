@@ -19,9 +19,10 @@ class ExcelController extends Controller
     function importStore(Request $request)
     {
         /**
-         * işlem sonrası $_SESSION['inserteed_users'] oturumundaki kayıt edilen excel kullanıcı bilgilerini alıyoruz.*/
-        $import = Excel::import(new UsersImport, $request->file);
-        dd($_SESSION['inserteed_users']);
+         * işlem sonrası $new classındaki insertedUsersId metodu ile  kayıt edilen excel kullanıcı id bilgilerini alıyoruz.*/
+        $new = new UsersImport();
+        $import = Excel::import($new, $request->file);
+        dd($new->insertedUsersId());
         return redirect()->back();
     }
 }
